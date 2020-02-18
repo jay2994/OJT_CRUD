@@ -3,9 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+
+<link rel="stylesheet" href="style.css">
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-database.js"></script>`
+<script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDZ2SE3lqorToLBUk6Wt-VHtzUKfukgUwE",
+    authDomain: "crud-96bbd.firebaseapp.com",
+    databaseURL: "https://crud-96bbd.firebaseio.com",
+    projectId: "crud-96bbd",
+    storageBucket: "crud-96bbd.appspot.com",
+    messagingSenderId: "340523581746",
+    appId: "1:340523581746:web:ddf5e0fd0ddc8a20a3972b",
+    measurementId: "G-BXJHLJDQQC"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+
+    <title>CRUD PROJECT</title>
+
 </head>
+
 <body>
-    sample11111111
+  <div class="mainform">
+ <center><h1>PROFILLING</h1></center>
+  <div class="Division">
+    <div class="Section1">
+      <div class="alignment">
+    <table>
+     <tr>
+      <td>ID: </td>
+      <td><input type="text" name="id" id="user_id" /></td>
+     </tr>
+     <tr>
+      <td>FULL NAME: </td>
+      <td><input type="text" name="user_name" id="user_name" /></td>
+     </tr>
+     <tr>
+        <td>ADDRESS: </td>
+        <td><input type="text" name="user_address" id="user_address" /></td>
+       </tr>
+     <tr>
+        <tr>
+            <td>AGE: </td>
+            <td><input type="text" name="user_age" id="user_age" /></td>
+           </tr>
+        <tr>
+     </tr>
+    </table>
+    <div class="button">
+      <td colspan="2">
+       <input class="btn" value="SAVE" onclick="save_user();" />
+       <input class="btn" value="UPDATE" onclick="update_user();" />
+       <input class="btn" value="DELETE" onclick="delete_user();" />
+      </td>
+    </div>
+   
+  </div>
+  </div>
+</div>
+    
+  <div class="Section2">
+    <h3>Users List</h3>
+    
+    <table id="tbl_users_list" border="1">
+     <tr>
+      <td>#ID</td>
+      <td>FULL NAME</td>
+      <td>ADDRESS</td>
+      <td>AGE</td>
+     </tr>
+    </table>
+  </div> 
+</div>
+  
+
+    <script>
+    
+     var tblUsers = document.getElementById('tbl_users_list');
+     var databaseRef = firebase.database().ref('users/');
+     var rowIndex = 1;
+     
+     databaseRef.once('value', function(snapshot) {
+       snapshot.forEach(function(childSnapshot) {
+      var childKey = childSnapshot.key;
+      var childData = childSnapshot.val();
+      var childData = childSnapshot.val();
+      var childData = childSnapshot.val();
+      var childData = childSnapshot.val();
+
+      var row = tblUsers.insertRow(rowIndex);
+      var cellId = row.insertCell(0);
+      var cellName = row.insertCell(1);
+      var cellAddress = row.insertCell(2);
+      var cellAge = row.insertCell(3);
+
+      cellId.appendChild(document.createTextNode(childKey));
+      cellName.appendChild(document.createTextNode(childData.user_name));
+      cellAddress.appendChild(document.createTextNode(childData.user_address));
+      cellAge.appendChild(document.createTextNode(childData.user_age));
+      
+      rowIndex = rowIndex + 1;
+       });
+     });
+      
+     function save_user(){
+      var user_name = document.getElementById('user_name').value;
+      var user_address = document.getElementById('user_address').value;
+      var user_age = document.getElementById('user_age').value;
+     
+      var uid = firebase.database().ref().child('users').push().key;
+      
+      var data = {
+       user_id: uid,
+       user_name: user_name,
+       user_address: user_address,
+       user_age: user_age
+      }
+      
+      var updates = {};
+      updates['/users/' + uid] = data;
+      firebase.database().ref().update(updates);
+      
+      alert('The user is created successfully!');
+      reload_page();
+     }
+     
+     function update_user(){
+      var user_id = document.getElementById('user_id').value;
+      var user_name = document.getElementById('user_name').value;
+      var user_address = document.getElementById('user_address').value;
+      var user_age = document.getElementById('user_age').value;
+   
+      var data = {
+       user_id: user_id,
+       user_name: user_name,
+       user_address: user_address,
+       user_age: user_age
+      }
+      
+      var updates = {};
+      updates['/users/' + user_id] = data;
+      firebase.database().ref().update(updates);
+      
+      alert('The user is updated successfully!');
+      
+      reload_page();
+     }
+     
+     function delete_user(){
+      var user_id = document.getElementById('user_id').value;
+     
+      firebase.database().ref().child('/users/' + user_id).remove();
+      alert('The user is deleted successfully!');
+      reload_page();
+     }
+     
+     function reload_page(){
+      window.location.reload();
+     }
+     
+    </script>
+    
 </body>
 </html>
